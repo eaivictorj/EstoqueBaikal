@@ -1,0 +1,111 @@
+<!-- templates/inventario.html -->
+{% extends 'base.html' %}
+{% block title %}Inventário{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <!-- Menu lateral fixo -->
+    <div class="col-md-2 bg-dark text-white p-3 min-vh-100 fixed-left">
+      <h5 class="mb-4">Almoxarifado</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('dashboard') }}">📊 Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('inventario') }}">📦 Inventário</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('entrada_saida') }}">🔄 Entrada/Saída</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('cadastro_produto') }}">➕ Cadastrar Produto</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('movimentacoes') }}">📈 Movimentações</a></li>
+        {% if current_user.perfil == 'admin' %}
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('criar_usuario') }}">👤 Novo Usuário</a></li>
+        {% endif %}
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('logout') }}">🚪 Sair</a></li>
+      </ul>
+      
+      
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="col-md-10 p-4">
+      <h2 class="mb-4">📦 Inventário</h2>
+
+      <!-- Filtros -->
+      <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+          <input type="text" name="busca" class="form-control" placeholder="Buscar por nome ou código..." value="{{ busca or '' }}">
+        </div>
+        <div class="col-md-3">
+          <input type="date" name="data_inicio" class="form-control" value="{{ data_inicio or '' }}">
+        </div>
+        <div class="col-md-3">
+          <input type="date" name="data_fim" class="form-control" value="{{ data_fim or '' }}">
+        </div>
+        <div class="col-md-2 d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+          <a href="{{ url_for('inventario') }}" class="btn btn-secondary">Limpar</a>
+        </div>
+      </form>
+
+      <!-- Botões de exportação -->
+      <div class="mb-3 d-flex justify-content-end">
+        <a href="{{ url_for('relatorio_excel') }}" class="btn btn-success me-2">📊 Exportar Excel</a>
+        <a href="{{ url_for('relatorio_pdf') }}" class="btn btn-danger">📄 Exportar PDF</a>
+      </div>
+
+      <!-- Tabela -->
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>Nome</th>
+              <th>Código</th>
+              <th>Local</th>
+              <th>Família</th>
+              <th>Fator</th>
+              <th>Rua</th>
+              <th>Prateleira</th>
+              <th>Nível</th>
+              <th>Coluna</th>
+              <th>Entradas</th>
+              <th>Saídas</th>
+              <th>Saldo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in produtos %}
+            <tr>
+              <td>{{ p.nome }}</td>
+              <td>{{ p.codigo_barras }}</td>
+              <td>{{ p.local }}</td>
+              <td>{{ p.familia }}</td>
+              <td>{{ p.fator }}</td>
+              <td>{{ p.rua }}</td>
+              <td>{{ p.prateleira }}</td>
+              <td>{{ p.nivel }}</td>
+              <td>{{ p.coluna }}</td>
+              <td>{{ saldos[p.id]['entradas'] }}</td>
+              <td>{{ saldos[p.id]['saidas'] }}</td>
+              <td><strong>{{ saldos[p.id]['saldo'] }}</strong></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+<!-- Estilos CSS -->
+<style>
+  .fixed-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    z-index: 1000;
+  }
+
+  .container-fluid {
+    margin-left: 250px;
+  }
+</style>

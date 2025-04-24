@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h3>🔄 Movimentação de Produto</h3>
+    <form method="POST">
+        <div class="form-group">
+            <label>Código de Barras</label>
+            <input type="text" name="codigo" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Tipo de Movimentação</label>
+            <select name="tipo" class="form-control" required>
+                <option value="entrada">Entrada</option>
+                <option value="saida">Saída</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Quantidade</label>
+            <input type="number" name="quantidade" class="form-control" min="1" required>
+        </div>
+        <div class="form-group">
+            <label>Destino / Local</label>
+            <input type="text" name="destino" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Observações</label>
+            <textarea name="observacoes" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Registrar Movimentação</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">📊 Dashboard</h2>
+
+ 
+
+  <!-- Indicadores rápidos -->
+  <div class="row text-center mb-5">
+    <div class="col-md-6">
+      <div class="card shadow rounded p-3">
+        <h5>Total de Produtos</h5>
+        <h2>{{ total_produtos }}</h2>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow rounded p-3">
+        <h5>Total em Estoque</h5>
+        <h2>{{ total_estoque }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="row">
+    <!-- Top 5 produtos -->
+    <div class="col-md-6 mb-4">
+      <h5>Top 5 Produtos Mais Movimentados</h5>
+      <canvas id="topProdutosChart"></canvas>
+    </div>
+
+    <!-- Movimentações ao longo do tempo -->
+    <div class="col-md-6 mb-4">
+      <h5>Movimentações ao Longo do Tempo</h5>
+      <canvas id="movimentacoesChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Top 5 produtos mais movimentados
+  const topProdutosCtx = document.getElementById('topProdutosChart').getContext('2d');
+  const topProdutosChart = new Chart(topProdutosCtx, {
+    type: 'bar',
+    data: {
+      labels: {{ top_produtos | map(attribute=0) | list | tojson }},
+      datasets: [{
+        label: 'Quantidade Movimentada',
+        data: {{ top_produtos | map(attribute=1) | list | tojson }},
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  // Gráfico de movimentações ao longo do tempo
+  const movimentacoesCtx = document.getElementById('movimentacoesChart').getContext('2d');
+  const movimentacoesChart = new Chart(movimentacoesCtx, {
+    type: 'line',
+    data: {
+      labels: {{ movimentacoes_por_data | map(attribute=0) | map('string') | list | tojson }},
+      datasets: [{
+        label: 'Total Movimentado',
+        data: {{ movimentacoes_por_data | map(attribute=1) | list | tojson }},
+        backgroundColor: 'rgba(255, 159, 64, 0.4)',
+        borderColor: 'rgba(255, 159, 64, 1)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+{% endblock %}

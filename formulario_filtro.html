@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Filtro de Relatório</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+</head>
+<body>
+    <h2>Gerar Relatório de Movimentações</h2>
+    <form action="{{ url_for('relatorio') }}" method="post">
+        <label for="data_inicio">Data Inicial:</label>
+        <input type="date" name="data_inicio" required><br><br>
+
+        <label for="data_fim">Data Final:</label>
+        <input type="date" name="data_fim" required><br><br>
+
+        <label for="local">Local:</label>
+        <input type="text" name="local" placeholder="Ex: RECIFE, OBRA1"><br><br>
+
+        <label for="tipo">Tipo:</label>
+        <select name="tipo">
+            <option value="">Todos</option>
+            <option value="ENTRADA">ENTRADA</option>
+            <option value="SAÍDA">SAÍDA</option>
+        </select><br><br>
+
+        <button type="submit">Gerar PDF</button>
+    </form>
+</body>
+</html>

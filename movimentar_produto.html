@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-4">Movimentar Produto</h3>
+
+    <form method="POST" class="mb-5" id="formMovimentacao">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="codigo_barras">Código de Barras:</label>
+                <input type="text" name="codigo" id="codigo_barras" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+                <label>Nome do Produto:</label>
+                <input type="text" id="nome_produto" class="form-control" disabled>
+            </div>
+            <div class="col-md-4">
+                <label>Saldo Atual:</label>
+                <input type="text" id="saldo_atual" class="form-control" disabled>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <label for="tipo">Tipo de Movimentação:</label>
+                <select name="tipo" id="tipo" class="form-control" required>
+                    <option value="">Selecione</option>
+                    <option value="entrada">Entrada</option>
+                    <option value="saida">Saída</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="quantidade">Quantidade:</label>
+                <input type="number" name="quantidade" id="quantidade" class="form-control" required min="1">
+            </div>
+            <div class="col-md-4">
+                <label for="destino">Destino/Local:</label>
+                <input type="text" name="destino" id="destino" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <label for="observacoes">Observações:</label>
+            <textarea name="observacoes" id="observacoes" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Registrar Movimentação</button>
+        </div>
+    </form>
+
+    <hr>
+
+    <h4>Histórico de Movimentações</h4>
+    <!-- Aqui você pode reaproveitar a tabela de movimentações com filtros -->
+    <form class="row g-3 mb-3" method="GET">
+        <div class="col-md-4">
+            <input type="text" name="filtro_codigo" class="form-control" placeholder="Filtrar por código de barras" value="{{ request.args.get('filtro_codigo', '') }}">
+        </div>
+        <div class="col-md-4">
+            <select name="filtro_tipo" class="form-control">
+                <option value="">Todos os tipos</option>
+                <option value="entrada" {% if request.args.get('filtro_tipo') == 'entrada' %}selected{% endif %}>Entrada</option>
+                <option value="saida" {% if request.args.get('filtro_tipo') == 'saida' %}selected{% endif %}>Saída</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-secondary w-100">Filtrar</button>
+        </div>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Produto</th>
+                <th>Tipo</th>
+                <th>Quantidade</th>
+                <th>Responsável</th>
+                <th>Local</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in movimentacoes %}
+            <tr>
+                <td>{{ m.data.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ m.produto.nome }}</td>
+                <td>{{ m.tipo }}</td>
+                <td>{{ m.quantidade }}</td>
+                <td>{{ m.responsavel }}</td>
+                <td>{{ m.local }}</td>
+                <td>{{ m.observacoes }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.getElementById('codigo_barras').addEventListener('blur', function () {
+        const codigo = this.value;
+        if (codigo) {
+            fetch(`/api/produto/${codigo}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        document.getElementById('nome_produto').value = '';
+                        document.getElementById('saldo_atual').value = '';
+                        alert(data.erro);
+                    } else {
+                        document.getElementById('nome_produto').value = data.nome;
+                        document.getElementById('saldo_atual').value = data.saldo;
+                    }
+                });
+        }
+    });
+</script>
+{% endblock %}

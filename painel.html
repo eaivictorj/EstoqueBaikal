@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel - Estoque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Bem-vindo, {{ session['usuario'] }}!</h2>
+        <a href="/logout" class="btn btn-outline-danger">Sair</a>
+    </div>
+
+    {% if perfil in ['ALMOX_RECIFE', 'ADM_OBRA'] %}
+    <!-- Formulário de Cadastro de Produto -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">Cadastrar Produto</div>
+        <div class="card-body">
+            <form action="/cadastro_produto" method="POST">
+                <div class="row mb-2">
+                    <div class="col">
+                        <input type="text" name="nome" class="form-control" placeholder="Nome do produto" required>
+                    </div>
+                    <div class="col">
+                        <input type="text" name="codigo" class="form-control" placeholder="Código de barras" required>
+                    </div>
+                    <div class="col">
+                        <input type="text" name="local" class="form-control" placeholder="Local (Recife ou Obra)" required>
+                    </div>
+                    <div class="col">
+                        <input type="number" name="quantidade" class="form-control" placeholder="Qtd." required>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-success">Salvar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Formulário de Filtro -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">Relatório por Filtro</div>
+        <div class="card-body">
+            <form method="GET" action="/relatorio">
+                <div class="row mb-2">
+                    <div class="col">
+                        <input type="text" class="form-control" name="produto" placeholder="Nome ou código do produto">
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control" name="local" placeholder="Local (Recife, Obra...)">
+                    </div>
+                    <div class="col">
+                        <input type="date" class="form-control" name="data_inicio">
+                    </div>
+                    <div class="col">
+                        <input type="date" class="form-control" name="data_fim">
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-info text-white">Filtrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Estoque Atual -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">Estoque Atual</div>
+        <div class="card-body p-0">
+            <table class="table table-bordered table-hover m-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Código</th>
+                        <th>Local</th>
+                        <th>Quantidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                    <tr>
+                        <td>{{ produto.nome }}</td>
+                        <td>{{ produto.codigo }}</td>
+                        <td>{{ produto.local }}</td>
+                        <td>{{ produto.quantidade }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Resultado do Relatório -->
+    {% if historico %}
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">Resultado do Relatório</div>
+        <div class="card-body p-0">
+            <table class="table table-bordered table-hover m-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Produto</th>
+                        <th>Tipo</th>
+                        <th>Quantidade</th>
+                        <th>Usuário</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in historico %}
+                    <tr>
+                        <td>{{ item.produto.nome }}</td>
+                        <td>{{ item.tipo }}</td>
+                        <td>{{ item.quantidade }}</td>
+                        <td>{{ item.usuario }}</td>
+                        <td>{{ item.data.strftime('%d/%m/%Y %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Ações -->
+    <div class="mt-4 text-center">
+        <a href="/cadastro_usuario" class="btn btn-outline-secondary btn-sm">Cadastrar novo usuário</a>
+        <a href="/consulta" class="btn btn-outline-primary btn-sm">Consultar Estoque</a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<form method="POST">
+    <label>Código de Barras:</label>
+    <input type="text" name="codigo_barras" required>
+
+    <label>Tipo:</label>
+    <select name="tipo" required>
+        <option value="entrada">Entrada</option>
+        <option value="saida">Saída</option>
+    </select>
+
+    <label>Quantidade:</label>
+    <input type="number" name="quantidade" required>
+
+    <label>Destino:</label>
+    <input type="text" name="destino" required>
+
+    <label>Responsável:</label>
+    <input type="text" name="responsavel" required>
+
+    <label>Observações:</label>
+    <textarea name="observacoes"></textarea>
+
+    <button type="submit">Registrar</button>
+</form>

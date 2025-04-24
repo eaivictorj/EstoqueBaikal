@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">📝 Cadastro de Novo Produto</h2>
+
+  <!-- Formulário de Cadastro de Produto -->
+  <form method="POST" action="{{ url_for('cadastro_produto') }}">
+    <!-- Campos de Cadastro de Produto -->
+    <div class="mb-3">
+      <label for="nome" class="form-label">Nome do Produto</label>
+      <input type="text" class="form-control" id="nome" name="nome" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="codigo_barras" class="form-label">Código de Barras</label>
+      <input type="text" class="form-control" id="codigo_barras" name="codigo_barras" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="quantidade" class="form-label">Quantidade Inicial</label>
+      <input type="number" class="form-control" id="quantidade" name="quantidade" min="0" value="0">
+    </div>
+
+    <div class="mb-3">
+      <label for="local" class="form-label">Local de Armazenamento</label>
+      <input type="text" class="form-control" id="local" name="local" required>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar Produto</button>
+  </form>
+
+  <hr>
+
+  <!-- Formulário para Gerar Etiqueta -->
+  <h3 class="mt-4">📄 Gerador de Etiqueta</h3>
+  <form method="POST" action="{{ url_for('gerar_etiqueta') }}">
+    <div class="mb-3">
+      <label for="rua" class="form-label">Rua</label>
+      <input type="text" class="form-control" id="rua" name="rua" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="prateleira" class="form-label">Prateleira</label>
+      <input type="text" class="form-control" id="prateleira" name="prateleira" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="nivel" class="form-label">Nível</label>
+      <input type="text" class="form-control" id="nivel" name="nivel" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="aumento" class="form-label">Aumento</label>
+      <input type="text" class="form-control" id="aumento" name="aumento" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Gerar e Imprimir Etiqueta</button>
+  </form>
+
+</div>
+{% endblock %}

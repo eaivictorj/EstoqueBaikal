@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Registrar Entrada ou Saída de Produto</h2>
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="codigo">Código de Barras:</label>
+            <input type="text" class="form-control" id="codigo" name="codigo" required autofocus>
+        </div>
+        <div class="form-group mt-2">
+            <label for="tipo">Tipo de Movimentação:</label>
+            <select class="form-control" id="tipo" name="tipo" required>
+                <option value="entrada">Entrada</option>
+                <option value="saida">Saída</option>
+            </select>
+        </div>
+        <div class="form-group mt-2">
+            <label for="quantidade">Quantidade:</label>
+            <input type="number" class="form-control" id="quantidade" name="quantidade" required min="1">
+        </div>
+        <div class="form-group mt-2">
+            <label for="destino">Destino/Local:</label>
+            <input type="text" class="form-control" id="destino" name="destino">
+        </div>
+        <div class="form-group mt-2">
+            <label for="observacoes">Observações:</label>
+            <textarea class="form-control" id="observacoes" name="observacoes"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success mt-3">Registrar Movimentação</button>
+        <a href="{{ url_for('inventario') }}" class="btn btn-secondary mt-3">Voltar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}Criar Usuário{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <!-- Menu lateral fixo -->
+    <div class="col-md-2 bg-dark text-white p-3 min-vh-100 fixed-left">
+      <h5 class="mb-4">Almoxarifado</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('inventario') }}">📦 Inventário</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('entrada_saida') }}">🔄 Entrada/Saída</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('cadastro_produto') }}">➕ Cadastrar Produto</a></li>
+        {% if current_user.perfil == 'admin' %}
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('criar_usuario') }}">👤 Novo Usuário</a></li>
+        {% endif %}
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('logout') }}">🚪 Sair</a></li>
+      </ul>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="col-md-10 p-4">
+      <h2 class="mb-4">👤 Criar Usuário</h2>
+
+      <!-- Alertas Flash -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" class="row g-3">
+        <div class="col-md-6">
+          <label for="nome" class="form-label">Nome</label>
+          <input type="text" class="form-control" id="nome" name="nome" required>
+        </div>
+
+        <div class="col-md-6">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+
+        <div class="col-md-6">
+          <label for="senha" class="form-label">Senha</label>
+          <input type="password" class="form-control" id="senha" name="senha" required>
+        </div>
+
+        <div class="col-md-6">
+          <label for="perfil" class="form-label">Perfil</label>
+          <select class="form-select" id="perfil" name="perfil">
+            <option value="admin">Admin</option>
+            <option value="usuario">Almoxarife</option>
+            <option value="usuario">Suprimentos</option>
+            <option value="usuario">Engenheiro</option>
+            <!-- Adicione outros perfis se necessário -->
+          </select>
+        </div>
+
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Criar Conta</button>
+          <a href="{{ url_for('login') }}" class="btn btn-link">Já tem uma conta? Faça login.</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+<!-- Estilos CSS -->
+<style>
+  .fixed-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    z-index: 1000;
+  }
+
+  .container-fluid {
+    margin-left: 250px;
+  }
+</style>

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Consulta de Movimentações</h2>
+
+    <form method="GET" action="{{ url_for('consulta') }}" class="row g-3 align-items-end mb-4">
+        <div class="col-md-3">
+            <label for="data_inicio" class="form-label">Data Início</label>
+            <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="{{ request.args.get('data_inicio', '') }}">
+        </div>
+        <div class="col-md-3">
+            <label for="data_fim" class="form-label">Data Fim</label>
+            <input type="date" class="form-control" id="data_fim" name="data_fim" value="{{ request.args.get('data_fim', '') }}">
+        </div>
+        <div class="col-md-3">
+            <label for="local" class="form-label">Local</label>
+            <select class="form-select" id="local" name="local">
+                <option value="">Todos</option>
+                {% for l in locais %}
+                    <option value="{{ l }}" {% if request.args.get('local') == l %}selected{% endif %}>{{ l }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </div>
+    </form>
+
+    <div class="mb-3 d-flex gap-2">
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Data</th>
+                    <th>Produto</th>
+                    <th>Código de Barras</th>
+                    <th>Tipo</th>
+                    <th>Quantidade</th>
+                    <th>Local</th>
+                    <th>Responsável</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in historico %}
+                <tr>
+                    <td>{{ h.data.strftime("%d/%m/%Y %H:%M") }}</td>
+                    <td>{{ h.produto.nome }}</td>
+                    <td>{{ h.produto.codigo_barras }}</td>
+                    <td>{{ h.tipo }}</td>
+                    <td>{{ h.quantidade }}</td>
+                    <td>{{ h.produto.local }}</td>
+                    <td>{{ h.responsavel }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Nenhuma movimentação encontrada.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% block title %}Cadastrar Produto{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <!-- Menu lateral fixo -->
+    <div class="col-md-2 bg-dark text-white p-3 min-vh-100 fixed-left">
+      <h5 class="mb-4">Almoxarifado</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('inventario') }}">📦 Inventário</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('entrada_saida') }}">🔄 Entrada/Saída</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('cadastro_produto') }}">➕ Cadastrar Produto</a></li>
+        {% if current_user.perfil == 'admin' %}
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('criar_usuario') }}">👤 Novo Usuário</a></li>
+        {% endif %}
+        <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('logout') }}">🚪 Sair</a></li>
+      </ul>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="col-md-10 p-4">
+      <h2 class="mb-4">➕ Cadastrar Produto</h2>
+
+      <form method="POST" class="row g-3">
+        <div class="col-md-6">
+          <label for="nome" class="form-label">Nome</label>
+          <input type="text" class="form-control" id="nome" name="nome" required>
+        </div>
+        <div class="col-md-6">
+          <label for="codigo_barras" class="form-label">Código de Barras</label>
+          <input type="text" class="form-control" id="codigo_barras" name="codigo_barras" required>
+        </div>
+        <div class="col-md-4">
+          <label for="quantidade" class="form-label">Quantidade</label>
+          <input type="number" class="form-control" id="quantidade" name="quantidade" required>
+        </div>
+        <div class="col-md-4">
+          <label for="local" class="form-label">Local</label>
+          <input type="text" class="form-control" id="local" name="local" required>
+        </div>
+        <div class="col-md-4">
+          <label for="familia" class="form-label">Família</label>
+          <select class="form-control" id="familia" name="familia" required>
+            <option value="">Selecione...</option>
+            <option value="Elétrica">Elétrica</option>
+            <option value="Hidráulica">Hidráulica</option>
+            <option value="Ferramentas">Ferramentas</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="fator" class="form-label">Fator</label>
+          <input type="text" class="form-control" id="fator" name="fator">
+        </div>
+        <div class="col-md-3">
+          <label for="rua" class="form-label">Rua</label>
+          <input type="text" class="form-control" id="rua" name="rua">
+        </div>
+        <div class="col-md-2">
+          <label for="prateleira" class="form-label">Prateleira</label>
+          <input type="text" class="form-control" id="prateleira" name="prateleira">
+        </div>
+        <div class="col-md-2">
+          <label for="nivel" class="form-label">Nível</label>
+          <input type="text" class="form-control" id="nivel" name="nivel">
+        </div>
+        <div class="col-md-2">
+          <label for="coluna" class="form-label">Coluna</label>
+          <input type="text" class="form-control" id="coluna" name="coluna">
+        </div>
+
+        <!-- Botões -->
+        <div class="col-12 d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary">Cadastrar Produto</button>
+          <button type="button" class="btn btn-secondary" onclick="imprimirEtiqueta()">🖨️ Imprimir Etiqueta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Área oculta com os dados da etiqueta -->
+<div id="etiqueta" style="display: none;">
+  <div style="font-family: Arial, sans-serif; padding: 10px; width: 100%;">
+    <h4>Etiqueta de Produto</h4>
+    <p><strong>Fator:</strong> <span id="fator_valor"></span></p>
+    <p><strong>Rua:</strong> <span id="rua_valor"></span></p>
+    <p><strong>Prateleira:</strong> <span id="prateleira_valor"></span></p>
+    <p><strong>Nível:</strong> <span id="nivel_valor"></span></p>
+    <p><strong>Coluna:</strong> <span id="coluna_valor"></span></p>
+    <div id="qrcode"></div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script>
+  function imprimirEtiqueta() {
+    const fator = document.getElementById('fator').value;
+    const rua = document.getElementById('rua').value;
+    const prateleira = document.getElementById('prateleira').value;
+    const nivel = document.getElementById('nivel').value;
+    const coluna = document.getElementById('coluna').value;
+
+    document.getElementById('fator_valor').textContent = fator;
+    document.getElementById('rua_valor').textContent = rua;
+    document.getElementById('prateleira_valor').textContent = prateleira;
+    document.getElementById('nivel_valor').textContent = nivel;
+    document.getElementById('coluna_valor').textContent = coluna;
+
+    const infoQR = `Fator: ${fator}, Rua: ${rua}, Prateleira: ${prateleira}, Nível: ${nivel}, Coluna: ${coluna}`;
+    const qrcodeDiv = document.getElementById("qrcode");
+    qrcodeDiv.innerHTML = "";
+
+    const canvas = document.createElement("canvas");
+    QRCode.toCanvas(canvas, infoQR, function (error) {
+      if (error) {
+        console.error(error);
+        return;
+      }
+      qrcodeDiv.appendChild(canvas);
+
+      const etiquetaHTML = document.getElementById('etiqueta').innerHTML;
+      const printWindow = window.open('', '', 'width=800,height=600');
+      printWindow.document.write(`
+        <html>
+        <head>
+          <title>Etiqueta</title>
+          <style>
+            @page { size: landscape; }
+            body { font-family: Arial, sans-serif; padding: 20px; }
+          </style>
+        </head>
+        <body>${etiquetaHTML}</body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    });
+  }
+</script>
+{% endblock %}
+
+<!-- Estilo fixo para o layout -->
+<style>
+  .fixed-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    z-index: 1000;
+  }
+  .container-fluid {
+    margin-left: 250px;
+  }
+</style>

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Editar Produto</h2>
+  <form method="POST">
+    <div class="form-group">
+      <label for="nome">Nome</label>
+      <input type="text" class="form-control" id="nome" name="nome" value="{{ produto.nome }}" required>
+    </div>
+    <div class="form-group">
+      <label for="codigo_barras">Código de Barras</label>
+      <input type="text" class="form-control" id="codigo_barras" name="codigo_barras" value="{{ produto.codigo_barras }}" required>
+    </div>
+    <div class="form-group">
+      <label for="quantidade">Quantidade</label>
+      <input type="number" class="form-control" id="quantidade" name="quantidade" value="{{ produto.quantidade }}" required>
+    </div>
+    <div class="form-group">
+      <label for="local">Local</label>
+      <input type="text" class="form-control" id="local" name="local" value="{{ produto.local }}" required>
+    </div>
+    <div class="form-group">
+      <label for="familia">Família</label>
+      <select class="form-control" id="familia" name="familia" required>
+        <option value="">Selecione</option>
+        <option value="Elétrica" {% if produto.familia == 'Elétrica' %}selected{% endif %}>Elétrica</option>
+        <option value="Hidráulica" {% if produto.familia == 'Hidráulica' %}selected{% endif %}>Hidráulica</option>
+        <option value="Ferramentas" {% if produto.familia == 'Ferramentas' %}selected{% endif %}>Ferramentas</option>
+        <option value="Outros" {% if produto.familia == 'Outros' %}selected{% endif %}>Outros</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="fator">Fator</label>
+      <input type="text" class="form-control" id="fator" name="fator" value="{{ produto.fator }}">
+    </div>
+    <div class="form-group">
+      <label for="rua">Rua</label>
+      <input type="text" class="form-control" id="rua" name="rua" value="{{ produto.rua }}">
+    </div>
+    <div class="form-group">
+      <label for="prateleira">Prateleira</label>
+      <input type="text" class="form-control" id="prateleira" name="prateleira" value="{{ produto.prateleira }}">
+    </div>
+    <div class="form-group">
+      <label for="nivel">Nível</label>
+      <input type="text" class="form-control" id="nivel" name="nivel" value="{{ produto.nivel }}">
+    </div>
+    <div class="form-group">
+      <label for="coluna">Coluna</label>
+      <input type="text" class="form-control" id="coluna" name="coluna" value="{{ produto.coluna }}">
+    </div>
+    <button type="submit" class="btn btn-success">Salvar Alterações</button>
+    <a href="{{ url_for('inventario') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}
